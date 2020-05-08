@@ -1,6 +1,4 @@
 discord.py
-json
-random
 websockets
 aiohttp
 chardet
