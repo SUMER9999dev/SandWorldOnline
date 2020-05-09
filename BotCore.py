@@ -18,7 +18,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
 @client.command(name="Shop", description = "buy some item.")
-async def shopcmd(ctx, State, value):
+async def shopcmd(ctx):
     em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand", colour=0x337cc4)
     em.set_footer(text="for buy click reaction")
     msg = await ctx.send(embed=em)
