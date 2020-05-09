@@ -17,31 +17,34 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
-@client.command(name="Shop", description = "Shop using - sw!Shop <State> <Value>, State: Info or Buy, value: Items(Only for Info state), Shovel .")
+@client.command(name="Shop", description = "buy some item.")
 async def shopcmd(ctx, State, value):
     em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand", colour=0x337cc4)
-    em.set_footer(text="for buy use sw!BuyItem <Item Name>")
-    await ctx.send(embed=em)
-@client.command(name="BuyItem", description="buy some item, sw!BuyItem <Item Name>")
-async def buycmd(ctx, itemname):
-    user = ctx.author
-    if str(itemname) == "Shovel":
-        shovel = SandWorldCore.BuyShovel(user.id)
+    em.set_footer(text="for buy click reaction")
+    msg = await ctx.send(embed=em)
+    await msg.add_reaction("⛏️")
+    def check(reaction, user):
+        return user.id == ctx.author.id and reaction.message.id == msg.id
+    try:
+        rea, use = await client.wait_for('reaction_add', check=check, timeout=30.0)
+    except asyncio.TimeoutError:
+        await msg.delete()
+    if rea.emoji == "⛏️":
+        shovel = SandWorldCore.BuyShovel(ctx.author.id)
         if shovel == 1:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await user.send(embed=em)
+            await msg.edit(embed=em)
         elif shovel == 2:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await user.send(embed=em)
+            await msg.edit(embed=em)
         elif shovel == 3:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have shovel.", colour=0xffdd00)
-            await user.send(embed=em)
+            await msg.edit(embed=em)
         elif shovel == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await user.send(embed=em)
+            await msg.edit(embed=em)
     else:
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Invalid item!", colour=0xd11f1f)
-        await ctx.send(embed=em)
+        pass
 @client.command(name="info", description = "info about game.")
 async def InfoCmd(ctx):
     SandWorldCoreVer = SandWorldCore.CoreVersion
