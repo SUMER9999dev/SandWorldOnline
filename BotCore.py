@@ -1,6 +1,7 @@
 import discord
 import SandWorldCore
 import random
+import asyncio
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 import os
@@ -43,7 +44,6 @@ async def shopcmd(ctx):
         elif shovel == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
-        await msg.clear_reactions()
     else:
         pass
 @client.command(name="info", description = "info about game.")
@@ -193,6 +193,7 @@ async def Dig(ctx):
             TheFight = await SandWorldCore.FightStart(ctx, client, 70, 4, 14, "Sand Elemental")
             if TheFight == 1:
                 Sand = random.randint(10, 20)
+                SandWorldCore.AddSand(ProfileId, Sand)
                 em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You get {str(Sand)} sand!", colour=0x8ceb07)
                 await ctx.send(embed=em)
             else:
