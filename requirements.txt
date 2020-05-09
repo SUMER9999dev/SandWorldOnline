@@ -2,4 +2,4 @@ discord.py
 websockets
 aiohttp
 chardet
-request
+requests
