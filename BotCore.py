@@ -43,6 +43,7 @@ async def shopcmd(ctx):
         elif shovel == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
+        await msg.clear_reactions()
     else:
         pass
 @client.command(name="info", description = "info about game.")
