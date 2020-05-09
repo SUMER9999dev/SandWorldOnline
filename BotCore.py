@@ -1,11 +1,12 @@
 import discord
 import SandWorldCore
+import random
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 import os
 client = commands.Bot(command_prefix = "sw!")
 client.remove_command("help")
-BotCoreVer = "1.1.0"
+BotCoreVer = "1.1.3"
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="sw!help"))
@@ -16,8 +17,8 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
-@client.command(name="Shop", description = "Shop info")
-async def shopcmd(ctx):
+@client.command(name="Shop", description = "Shop using - sw!Shop <State> <Value>, State: Info or Buy, value: Items(Only for Info state), Shovel .")
+async def shopcmd(ctx, State, value):
     em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand", colour=0x337cc4)
     em.set_footer(text="for buy use sw!BuyItem <Item Name>")
     await ctx.send(embed=em)
@@ -181,8 +182,17 @@ async def Dig(ctx):
     ProfileId = ctx.author.id
     if SandWorldCore.IsProfileExist(ProfileId):
         Dig = SandWorldCore.DigSand(ProfileId)
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You get {str(Dig)} sand!", colour=0x8ceb07)
-        await ctx.send(embed=em)
+        if Dig != 90000:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You get {str(Dig)} sand!", colour=0x8ceb07)
+            await ctx.send(embed=em)
+        else:
+            TheFight = await SandWorldCore.FightStart(ctx, client, 70, 4, 14, "Sand Elemental")
+            if TheFight == 1:
+                Sand = random.randint(10, 20)
+                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You get {str(Sand)} sand!", colour=0x8ceb07)
+                await ctx.send(embed=em)
+            else:
+                pass
     else:
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
         await ctx.send(embed=em)
