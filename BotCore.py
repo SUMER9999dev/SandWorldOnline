@@ -7,7 +7,7 @@ from discord.ext.commands import has_permissions, MissingPermissions, MissingReq
 import os
 client = commands.Bot(command_prefix = "sw!")
 client.remove_command("help")
-BotCoreVer = "1.1.3"
+BotCoreVer = "1.2.3"
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="sw!help"))
