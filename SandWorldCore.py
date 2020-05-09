@@ -3,6 +3,7 @@ import random
 import discord
 import requests
 import asyncio
+import os
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 CoreVersion = "1.3.1"
