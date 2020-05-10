@@ -7,6 +7,7 @@ import os
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 CoreVersion = "1.4.2"
+DatabaseKey = os.environ.get("DatabaseKey")
 def CreateArmor(ArmorPlus, ArmorName):
     return {"BlockPlus": ArmorPlus, "Name": ArmorName}
 def CreateItem(SandFarmPlus, AttackPlus, Name):
