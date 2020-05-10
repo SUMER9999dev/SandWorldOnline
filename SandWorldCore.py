@@ -6,7 +6,7 @@ import asyncio
 import os
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
-CoreVersion = "1.3.1"
+CoreVersion = "1.3.2"
 DatabaseKey = os.environ.get("DatabaseKey")
 def BanUser(UserId):
     #with open("Data/Bans.json", "r") as f:
@@ -156,7 +156,7 @@ def RemoveSand(UserId, value):
 def DigSand(UserId):
     value = 0
     BannedIds = GetBannedUsers()
-    if not UserId in BannedIds:
+    if not UserId in BannedIds["BannedUsers"]:
         Event = random.randint(1, 10)
         if Event != 6:
             DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
