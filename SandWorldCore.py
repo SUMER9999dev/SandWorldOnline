@@ -126,8 +126,7 @@ def BuyShovel(UserId):
 def BuyItem(UserId, Item, Price):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
     if IsProfileExist(UserId):
-        if DataBase[str(UserId)]["Item"]["Name"] != Item["Name"]:
-            if IsProfileExist(UserId):
+        if DataBase[str(UserId)]["Item"] != Item:
                 if DataBase[str(UserId)]["Balance"] >= Price:
                     DataBase[str(UserId)]["Balance"] -= Price
                     DataBase[str(UserId)]["Item"] = Item
@@ -135,15 +134,14 @@ def BuyItem(UserId, Item, Price):
                     return 1
                 else:
                     return 2
-            else:
-                return 3
+        else:
+            return 3
     else:
         return 4
 def BuyArmor(UserId, Armor, Price):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
     if IsProfileExist(UserId):
-        if DataBase[str(UserId)]["Armor"]["Name"] != Armor["Name"]:
-            if IsProfileExist(UserId):
+        if DataBase[str(UserId)]["Armor"] != Armor:
                 if DataBase[str(UserId)]["Balance"] >= Price:
                     DataBase[str(UserId)]["Balance"] -= Price
                     DataBase[str(UserId)]["Armor"] = Armor
@@ -151,8 +149,8 @@ def BuyArmor(UserId, Armor, Price):
                     return 1
                 else:
                     return 2
-            else:
-                return 3
+        else:
+            return 3
     else:
         return 4
 def Pay(UserId, TargerId, Value):
