@@ -7,23 +7,24 @@ from discord.ext.commands import has_permissions, MissingPermissions, MissingReq
 import os
 client = commands.Bot(command_prefix = "sw!")
 client.remove_command("help")
-BotCoreVer = "1.3.3"
+BotCoreVer = "1.1.3"
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="sw!help"))
     print("bot ready")
-@client.event
-async def on_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-        await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
+#@client.event
+#async def on_command_error(ctx, error):
+    #if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        #await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
+    #if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        #await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
 @client.command(name="Shop", description = "buy some item.")
 async def shopcmd(ctx):
-    em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand", colour=0x337cc4)
+    em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand\n🗡️Rusty sword - 100 sand\n🦾Old armor - 120 sand", colour=0x337cc4)
     em.set_footer(text="for buy click reaction")
     msg = await ctx.send(embed=em)
     await msg.add_reaction("⛏️")
+    await msg.add_reaction("🗡️")
     def check(reaction, user):
         return user.id == ctx.author.id and reaction.message.id == msg.id
     try:
@@ -42,6 +43,36 @@ async def shopcmd(ctx):
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have shovel.", colour=0xffdd00)
             await msg.edit(embed=em)
         elif shovel == 4:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
+            await msg.edit(embed=em)
+    elif rea.emoji == "🗡️":
+        TheSword = SandWorldCore.CreateItem(0, 7, "Rusty sword")
+        Sword = SandWorldCore.BuyItem(ctx.author.id, TheSword, 100)
+        if Sword == 1:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
+            await msg.edit(embed=em)
+        elif Sword == 2:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
+            await msg.edit(embed=em)
+        elif Sword == 3:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have rusty sword.", colour=0xffdd00)
+            await msg.edit(embed=em)
+        elif Sword == 4:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
+            await msg.edit(embed=em)
+    elif rea.emoji == "🦾":
+        TheArmor = SandWorldCore.CreateArmor(5, "Old armor")
+        Armor = SandWorldCore.BuyArmor(ctx.author.id, TheArmor, 120)
+        if Sword == 1:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
+            await msg.edit(embed=em)
+        elif Sword == 2:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
+            await msg.edit(embed=em)
+        elif Sword == 3:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have old armor.", colour=0xffdd00)
+            await msg.edit(embed=em)
+        elif Sword == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
     else:
