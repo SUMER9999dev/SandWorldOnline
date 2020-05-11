@@ -7,7 +7,7 @@ from discord.ext.commands import has_permissions, MissingPermissions, MissingReq
 import os
 client = commands.Bot(command_prefix = "sw!")
 client.remove_command("help")
-BotCoreVer = "1.1.3"
+BotCoreVer = "1.4.5"
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="sw!help"))
@@ -66,16 +66,16 @@ async def shopcmd(ctx):
     elif rea.emoji == "🦾":
         TheArmor = SandWorldCore.CreateArmor(5, "Old armor")
         Armor = SandWorldCore.BuyArmor(ctx.author.id, TheArmor, 120)
-        if Sword == 1:
+        if Armor == 1:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
             await msg.edit(embed=em)
-        elif Sword == 2:
+        elif Armor == 2:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
             await msg.edit(embed=em)
-        elif Sword == 3:
+        elif Armor == 3:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have old armor.", colour=0xffdd00)
             await msg.edit(embed=em)
-        elif Sword == 4:
+        elif Armor == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
         await msg.clear_reactions()
