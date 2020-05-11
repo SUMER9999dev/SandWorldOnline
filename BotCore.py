@@ -46,6 +46,7 @@ async def shopcmd(ctx):
         elif shovel == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
+        await msg.clear_reactions()
     elif rea.emoji == "🗡️":
         TheSword = SandWorldCore.CreateItem(0, 7, "Rusty sword")
         Sword = SandWorldCore.BuyItem(ctx.author.id, TheSword, 100)
@@ -61,6 +62,7 @@ async def shopcmd(ctx):
         elif Sword == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
+        await msg.clear_reactions()
     elif rea.emoji == "🦾":
         TheArmor = SandWorldCore.CreateArmor(5, "Old armor")
         Armor = SandWorldCore.BuyArmor(ctx.author.id, TheArmor, 120)
@@ -76,6 +78,7 @@ async def shopcmd(ctx):
         elif Armor == 4:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
+        await msg.clear_reactions()
     else:
         pass
 @client.command(name="info", description = "info about game.")
