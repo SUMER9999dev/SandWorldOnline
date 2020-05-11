@@ -12,6 +12,12 @@ def CreateArmor(ArmorPlus, ArmorName):
     return {"BlockPlus": ArmorPlus, "Name": ArmorName}
 def CreateItem(SandFarmPlus, AttackPlus, Name):
     return {"AttackPlus": AttackPlus, "SandFarmPlus": SandFarmPlus, "Name": Name}
+def GetPlayerItem(UserId):
+    DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
+    return DataBase[str(UserId)]["Item"]
+def GetPlayerArmor(UserId):
+    DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
+    return DataBase[str(UserId)]["Armor"]
 def BanUser(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/bans.txt").json()
     DataBase["BannedUsers"].append(UserId)
