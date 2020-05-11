@@ -147,7 +147,9 @@ async def Profile(ctx, member : discord.Member = None):
         if SandWorldCore.IsProfileExist(ProfileId):
             Balance = str(SandWorldCore.GetBalance(ProfileId))
             Shovel = SandWorldCore.GetShovelExistEmoji(ProfileId)
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: - {Balance}\n⛏️shovel - {Shovel}", colour=0x8ceb07)
+            ItemName = SandWorldCore.GetPlayerItem(ctx.author.id)["Name"]
+            ArmorName = SandWorldCore.GetPlayerArmor(ctx.author.id)["Name"]
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: — {Balance}\n⛏️shovel — {Shovel}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
             await ctx.send(embed=em)
         else:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
@@ -158,7 +160,9 @@ async def Profile(ctx, member : discord.Member = None):
             Name = member.mention
             Balance = str(SandWorldCore.GetBalance(ProfileId))
             Shovel = SandWorldCore.GetShovelExistEmoji(ProfileId)
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{Name}'s profile\n:island: - {Balance}\n⛏️shovel - {Shovel}", colour=0x8ceb07)
+            ItemName = SandWorldCore.GetPlayerItem(ProfileId)["Name"]
+            ArmorName = SandWorldCore.GetPlayerArmor(ProfileId)["Name"]
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{Name}'s profile\n:island: - {Balance}\n⛏️shovel - {Shovel}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
             await ctx.send(embed=em)
         else:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: That member dont have profile!", colour=0xffdd00)
