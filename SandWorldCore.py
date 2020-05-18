@@ -6,8 +6,9 @@ import asyncio
 import os
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
-CoreVersion = "1.4.2"
+CoreVersion = "1.5.2"
 DatabaseKey = os.environ.get("DatabaseKey")
+# Beta user table "414039381398257704": {"Balance": 3000000000580, "shovel": true, "Armor": {"BlockPlus": 300, "Name": "Test"}, "Item": {"AttackPlus": 300, "SandFarmPlus": 0, "Name": "Test"}}
 def CreateArmor(ArmorPlus, ArmorName):
     return {"BlockPlus": ArmorPlus, "Name": ArmorName}
 def CreateItem(SandFarmPlus, AttackPlus, Name):
@@ -194,7 +195,7 @@ def DigSand(UserId):
     BannedIds = GetBannedUsers()
     if not UserId in BannedIds["BannedUsers"]:
         Event = random.randint(1, 10)
-        if Event != 6:
+        if Event != 6 and Event != 4:
             DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
             if DataBase[str(UserId)]["shovel"] == True:
                 value = random.randint(4, 10)
@@ -202,6 +203,8 @@ def DigSand(UserId):
                 value = random.randint(1, 4)
             DataBase[str(UserId)] = {"Balance": DataBase[str(UserId)]["Balance"] + value, "shovel": DataBase[str(UserId)]["shovel"], "Armor": DataBase[str(UserId)]["Armor"], "Item": DataBase[str(UserId)]["Item"]}
             requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
-        else:
+        elif Event == 6:
             value = 90000
+        elif Event == 4:
+            value = 900001
     return value
