@@ -61,19 +61,16 @@ async def FightStart(ctx, client, EnemyHP, EnemyAttackMin, EnemyAttackMax, Enemy
                 anv = discord.Embed(title="SandWorld Online Alpha", description=f"**{ctx.author.mention}** — **{EnemyName}**\n:heart: {str(PlayerHP)} vs :heart: {str(EnemyHP)}\nChoice by reaction.", colour=0xf52c2c)
                 await msg.edit(embed=anv)
             elif rea.emoji == '🛡️':
-                Block = random.randint(1, 4 + - DataBase[str(ctx.author.id)]["Armor"]["BlockPlus"])
-                Heal = random.randint(1, 5)
-                if EnemyAttackMax - Block > 0:
-                    EnemyDamage = random.randint(EnemyAttackMin, EnemyAttackMax - Block)
-                elif EnemyAttackMax - Block <= 0:
-                    EnemyDamage = 0
-                if PlayerHP - EnemyDamage < 0:
-                    EnemyDamage = PlayerHP
-                PlayerHP -= EnemyDamage
-                if Heal + PlayerHP > 100:
-                    pass
+                PlayerBlock = random.randint(1, 4 + DataBase[str(ctx.author.id)]["Armor"]["BlockPlus"])
+                EnemyAttack = random.randint(EnemyAttackMin, EnemyAttackMax)
+                if EnemyAttack - PlayerBlock <= 0:
+                    Heal = random.randint(1, 5)
+                    if PlayerHP + Heal >= 100:
+                        PlayerHP = 100
+                    else:
+                        PlayerHP += Heal
                 else:
-                    Heal + PlayerHP
+                    PlayerHP -= EnemyAttack 
                 await msg.clear_reactions()
                 await msg.add_reaction("⚔️")
                 await msg.add_reaction("🛡️")
