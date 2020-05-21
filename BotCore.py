@@ -7,7 +7,7 @@ from discord.ext.commands import has_permissions, MissingPermissions, MissingReq
 import os
 client = commands.Bot(command_prefix = "sw!")
 client.remove_command("help")
-BotCoreVer = "1.4.5"
+BotCoreVer = "1.6.5"
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.do_not_disturb, activity=discord.Game(name="sw!help"))
@@ -18,7 +18,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
-@client.command(name="Shop", description = "buy some item.")   
+@client.command(name="Shop", description = "buy some item.")
 async def shopcmd(ctx):
     em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand\n🗡️Rusty sword - 100 sand\n🦾Old armor - 120 sand\n🔰Almiet armor - 15.000 sand", colour=0x337cc4)
     em.set_footer(text="for buy click reaction")
@@ -125,8 +125,8 @@ async def PayCmd(ctx, member : discord.Member, Value : int):
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You can't send less than one sand!", colour=0xffdd00)
         await ctx.send(embed=em)
 @client.command(
-    name = "помощь",
-    aliases = ["команды", "comms", "commands", "help"],
+    name = "help",
+    aliases = ["команды", "comms", "commands", "помощь"],
     description = "That message."
 )
 async def help(ctx):
@@ -182,7 +182,7 @@ async def Profile(ctx, member : discord.Member = None):
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{Name}'s profile\n:island: - {Balance}\n⛏️shovel - {Shovel}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
             await ctx.send(embed=em)
         else:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: That member dont have profile!", colour=0xffdd00)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need do sw!RegProfile before do that!", colour=0xffdd00)
             await ctx.send(embed=em)
 @client.command(hidden = True, name="GiveAdmin")
 async def Hidden1(ctx, member : discord.Member):
@@ -223,17 +223,25 @@ async def Hidden3(ctx, member : discord.Member):
 @client.command(hidden=True, name="AddSand")
 async def Hidden4(ctx, member : discord.Member, value):
     if SandWorldCore.IsAdmin(ctx.author.id):
-        SandWorldCore.AddSand(member.id, value)
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{member.mention} get {str(value)} sand!", colour=0x8ceb07)
-        await ctx.send(embed=em)
+        if SandWorldCore.IsProfileExist(member.id):
+            SandWorldCore.AddSand(member.id, value)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{member.mention} get {str(value)} sand!", colour=0x8ceb07)
+            await ctx.send(embed=em)
+        else:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: That member dont have profile.", colour=0xffdd00)
+            await ctx.send(embed=em)
     else:
         pass
 @client.command(hidden=True, name="RemoveSand")
 async def Hidden5(ctx, member : discord.Member, value):
     if SandWorldCore.IsAdmin(ctx.author.id):
-        SandWorldCore.RemoveSand(member.id, value)
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{member.mention} lost {str(value)} sand.", colour=0x8ceb07)
-        await ctx.send(embed=em)
+        if SandWorldCore.IsProfileExist(member.id):
+            SandWorldCore.RemoveSand(member.id, value)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{member.mention} lost {str(value)} sand.", colour=0x8ceb07)
+            await ctx.send(embed=em)
+        else:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: That member dont have profile.", colour=0xffdd00)
+            await ctx.send(embed=em)
     else:
         pass
 @client.command(name="DigSand", description = "Get sand.")
