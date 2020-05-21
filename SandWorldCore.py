@@ -103,7 +103,8 @@ def GetBannedUsers():
 def AddAdmin(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/admins.txt").json()
     DataBase["AdminTable"].append(UserId)
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=Admins&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"Admins", "key":DatabaseKey, "NewData":NewData})
 def WritePlayerData(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
     DataBase[str(UserId)] = {"Balance": 0, "shovel": False, "Armor": CreateArmor(0, "None"), "Item": CreateItem(0, 0, "None")}
