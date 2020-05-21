@@ -6,7 +6,7 @@ import asyncio
 import os
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
-CoreVersion = "1.5.2"
+CoreVersion = "1.6.2"
 DatabaseKey = os.environ.get("DatabaseKey")
 # Beta user table "414039381398257704": {"Balance": 3000000000580, "shovel": true, "Armor": {"BlockPlus": 300, "Name": "Test"}, "Item": {"AttackPlus": 300, "SandFarmPlus": 0, "Name": "Test"}}
 def CreateArmor(ArmorPlus, ArmorName):
@@ -22,11 +22,13 @@ def GetPlayerArmor(UserId):
 def BanUser(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/bans.txt").json()
     DataBase["BannedUsers"].append(UserId)
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=Bans&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"Bans", "key":DatabaseKey, "NewData":NewData})
 def UnBanUser(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/bans.txt").json()
     DataBase["BannedUsers"].remove(UserId)
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=Bans&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"Bans", "key":DatabaseKey, "NewData":NewData})
 async def FightStart(ctx, client, EnemyHP, EnemyAttackMin, EnemyAttackMax, EnemyName):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
     PlayerHP = 100
@@ -104,8 +106,9 @@ def AddAdmin(UserId):
     requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=Admins&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
 def WritePlayerData(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
-    DataBase[str(UserId)] = {"Balance": 0, "shovel": False, "Armor": {"BlockPlus": 0, "Name": "None"}, "Item": {"AttackPlus": 0, "SandFarmPlus": 0, "Name": "None"}}
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    DataBase[str(UserId)] = {"Balance": 0, "shovel": False, "Armor": CreateArmor(0, "None"), "Item": CreateItem(0, 0, "None")}
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
 def IsProfileExist(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
     if not str(UserId) in DataBase:
@@ -119,7 +122,8 @@ def BuyShovel(UserId):
             if DataBase[str(UserId)]["Balance"] >= 30:
                 DataBase[str(UserId)]["Balance"] -= 30
                 DataBase[str(UserId)] = {"Balance": DataBase[str(UserId)]["Balance"], "shovel": True, "Armor": DataBase[str(UserId)]["Armor"], "Item": DataBase[str(UserId)]["Item"]}
-                requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+                NewData = json.dumps(DataBase)
+                requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
                 return 1
             else:
                 return 2
@@ -134,7 +138,8 @@ def BuyItem(UserId, Item, Price):
                 if DataBase[str(UserId)]["Balance"] >= Price:
                     DataBase[str(UserId)]["Balance"] -= Price
                     DataBase[str(UserId)]["Item"] = Item
-                    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+                    NewData = json.dumps(DataBase)
+                    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
                     return 1
                 else:
                     return 2
@@ -149,7 +154,8 @@ def BuyArmor(UserId, Armor, Price):
                 if DataBase[str(UserId)]["Balance"] >= Price:
                     DataBase[str(UserId)]["Balance"] -= Price
                     DataBase[str(UserId)]["Armor"] = Armor
-                    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+                    NewData = json.dumps(DataBase)
+                    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
                     return 1
                 else:
                     return 2
@@ -162,7 +168,8 @@ def Pay(UserId, TargerId, Value):
     if DataBase[str(UserId)]["Balance"] >= Value:
         DataBase[str(UserId)]["Balance"] -= Value
         DataBase[str(TargerId)]["Balance"] += Value
-        requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+        NewData = json.dumps(DataBase)
+        requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
         return 1
     else:
         return 2
@@ -178,15 +185,18 @@ def GetShovelExistEmoji(UserId):
 def RemoveAdmin(UserId):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/admins.txt").json()
     DataBase["AdminTable"].remove(UserId)
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=Admins&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"Admins", "key":DatabaseKey, "NewData":NewData})
 def AddSand(UserId, value):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
-    DataBase[str(UserId)] = {"Balance": DataBase[str(UserId)]["Balance"] + int(value), "shovel": DataBase[str(UserId)]["shovel"], "Armor": DataBase[str(UserId)]["Armor"], "Item": DataBase[str(UserId)]["Item"]}
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    DataBase[str(UserId)]["Balance"] += int(value)
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
 def RemoveSand(UserId, value):
     DataBase = requests.get("https://sumer-database.000webhostapp.com/sandworldonline/data.txt").json()
-    DataBase[str(UserId)] = {"Balance": DataBase[str(UserId)]["Balance"] -  int(value), "shovel": DataBase[str(UserId)]["shovel"], "Armor": DataBase[str(UserId)]["Armor"], "Item": DataBase[str(UserId)]["Item"]}
-    requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+    DataBase[str(UserId)]["Balance"] -= int(value)
+    NewData = json.dumps(DataBase)
+    requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
 def DigSand(UserId):
     value = 0
     BannedIds = GetBannedUsers()
@@ -199,7 +209,8 @@ def DigSand(UserId):
             else:
                 value = random.randint(1, 4)
             DataBase[str(UserId)] = {"Balance": DataBase[str(UserId)]["Balance"] + value, "shovel": DataBase[str(UserId)]["shovel"], "Armor": DataBase[str(UserId)]["Armor"], "Item": DataBase[str(UserId)]["Item"]}
-            requests.get(f"https://sumer-database.000webhostapp.com/sandworldonline/writedata.php?DataType=MainData&key={DatabaseKey}&NewData={json.dumps(DataBase)}")
+            NewData = json.dumps(DataBase)
+            requests.post("https://sumer-database.000webhostapp.com/sandworldonline/writedata.php", data={"DataType":"MainData", "key":DatabaseKey, "NewData":NewData})
         elif Event == 6:
             value = 90000
         elif Event == 4:
