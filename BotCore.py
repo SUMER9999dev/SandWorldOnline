@@ -98,6 +98,31 @@ async def shopcmd(ctx):
         await msg.clear_reactions()
     else:
         pass
+@client.command(name="AlmietPyramid", description="Infinity fight.")
+async def FIGHTFIGHTFIGHT(ctx):
+    Wins = 0
+    AlmietHP = 150
+    AlmietMinDamage = 1
+    AlmietMaxDamage =  8
+    while Wins < 15:
+        TheWar = await SandWorldCore.FightStart(ctx, client, AlmietHP, AlmietMinDamage, AlmietMaxDamage, "Almiet Guardian")
+        if TheWar == 1:
+            Wins += 1
+            AlmietHP += 10
+            AlmietMaxDamage += 1
+            AlmietMinDamage += 1
+        else:
+            break
+    if Wins >= 15:
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You win and get Strengthened Almiet Armor!", colour=0x8ceb07)
+        await ctx.send(embed=em)
+        AlmietArmor = SandWorldCore.CreateArmor(30, "Strengthened Almiet Armor")
+        SandWorldCore.BuyArmor(ctx.author.id, AlmietArmor, 0)
+    else:
+        SandGet = random.randint(10 * Wins, 20 * Wins)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You lost and get {str(SandGet)} sand!", colour=0x8ceb07)
+        await ctx.send(embed=em)
+        SandWorldCore.AddSand(ctx.author.id, SandGet)
 @client.command(name="info", description = "info about game.")
 async def InfoCmd(ctx):
     SandWorldCoreVer = SandWorldCore.CoreVersion
