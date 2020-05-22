@@ -116,7 +116,7 @@ async def shopcmd(ctx):
     else:
         pass
 @client.command(name="AlmietPyramid", description="Infinity fight.")
-@commands.cooldown(1, 86400, commands.BucketType.user)
+@commands.cooldown(1, 1800, commands.BucketType.user)
 async def FIGHTFIGHTFIGHT(ctx):
     if SandWorldCore.IsProfileExist(ctx.author.id):
         Wins = 0
