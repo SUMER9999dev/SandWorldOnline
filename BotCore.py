@@ -20,13 +20,14 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
 @client.command(name="Shop", description = "buy some item.")
 async def shopcmd(ctx):
-    em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand\n🗡️Rusty sword - 100 sand\n🦾Old armor - 120 sand\n🔰Almiet armor - 15.000 sand", colour=0x337cc4)
+    em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand\n🗡️Rusty sword - 100 sand\n🦾Old armor - 120 sand\n🔰Almiet armor - 15.000 sand\n🔪Almiet Sword - 5.000 sand", colour=0x337cc4)
     em.set_footer(text="for buy click reaction")
     msg = await ctx.send(embed=em)
     await msg.add_reaction("⛏️")
     await msg.add_reaction("🗡️")
     await msg.add_reaction("🦾")
     await msg.add_reaction("🔰")
+    await msg.add_reaction("🔪")
     def check(reaction, user):
         return user.id == ctx.author.id and reaction.message.id == msg.id
     try:
@@ -96,33 +97,59 @@ async def shopcmd(ctx):
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
             await msg.edit(embed=em)
         await msg.clear_reactions()
+    elif rea.emoji == "🔪":
+        TheSword = SandWorldCore.CreateItem(0, 30, "Almiet Sword")
+        Buying = SandWorldCore.BuyItem(ctx.author.id, TheSword, 5000)
+        if Buying == 1:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
+            await msg.edit(embed=em)
+        elif Buying == 2:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
+            await msg.edit(embed=em)
+        elif Buying == 3:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have Almiet sword.", colour=0xffdd00)
+            await msg.edit(embed=em)
+        elif Buying == 4:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
+            await msg.edit(embed=em)
+        await msg.clear_reactions()
     else:
         pass
 @client.command(name="AlmietPyramid", description="Infinity fight.")
+@commands.cooldown(1, 86400, commands.BucketType.user)
 async def FIGHTFIGHTFIGHT(ctx):
-    Wins = 0
-    AlmietHP = 150
-    AlmietMinDamage = 1
-    AlmietMaxDamage =  8
-    while Wins < 15:
-        TheWar = await SandWorldCore.FightStart(ctx, client, AlmietHP, AlmietMinDamage, AlmietMaxDamage, "Almiet Guardian")
-        if TheWar == 1:
-            Wins += 1
-            AlmietHP += 10
-            AlmietMaxDamage += 1
-            AlmietMinDamage += 1
+    if SandWorldCore.IsProfileExist(ctx.author.id):
+        Wins = 0
+        AlmietHP = 150
+        AlmietMinDamage = 1
+        AlmietMaxDamage =  8
+        while Wins < 15:
+            TheWar = await SandWorldCore.FightStart(ctx, client, AlmietHP, AlmietMinDamage, AlmietMaxDamage, "Almiet Guardian")
+            if TheWar == 1:
+                Wins += 1
+                AlmietHP += 10
+                AlmietMaxDamage += 1
+                AlmietMinDamage += 1
+            else:
+                break
+        if Wins >= 15:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You win and get Strengthened Almiet Armor!", colour=0x8ceb07)
+            await ctx.send(embed=em)
+            AlmietArmor = SandWorldCore.CreateArmor(30, "Strengthened Almiet Armor")
+            SandWorldCore.BuyArmor(ctx.author.id, AlmietArmor, 0)
         else:
-            break
-    if Wins >= 15:
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You win and get Strengthened Almiet Armor!", colour=0x8ceb07)
-        await ctx.send(embed=em)
-        AlmietArmor = SandWorldCore.CreateArmor(30, "Strengthened Almiet Armor")
-        SandWorldCore.BuyArmor(ctx.author.id, AlmietArmor, 0)
+            SandGet = random.randint(10 * Wins, 20 * Wins)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You lost and get {str(SandGet)} sand!", colour=0x8ceb07)
+            await ctx.send(embed=em)
+            SandWorldCore.AddSand(ctx.author.id, SandGet)
     else:
-        SandGet = random.randint(10 * Wins, 20 * Wins)
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You lost and get {str(SandGet)} sand!", colour=0x8ceb07)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
         await ctx.send(embed=em)
-        SandWorldCore.AddSand(ctx.author.id, SandGet)
+@FIGHTFIGHTFIGHT.error
+async def FIGHTFIGHTFIGHTERROR(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 24 hours! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
+        await ctx.send(embed=em)
 @client.command(name="info", description = "info about game.")
 async def InfoCmd(ctx):
     SandWorldCoreVer = SandWorldCore.CoreVersion
@@ -270,7 +297,7 @@ async def Hidden5(ctx, member : discord.Member, value):
     else:
         pass
 @client.command(name="DigSand", description = "Get sand.")
-@commands.cooldown(1, 30, commands.BucketType.user)
+@commands.cooldown(1, 20, commands.BucketType.user)
 async def Dig(ctx):
     ProfileId = ctx.author.id
     if SandWorldCore.IsProfileExist(ProfileId):
@@ -302,7 +329,7 @@ async def Dig(ctx):
 @Dig.error
 async def DigError(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 20 seconds!", colour=0xffdd00)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 20 seconds! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
         await ctx.send(embed=em)
 token = os.environ.get("BOT_TOKEN")
 client.run(token)
