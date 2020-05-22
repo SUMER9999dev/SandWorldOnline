@@ -148,7 +148,7 @@ async def FIGHTFIGHTFIGHT(ctx):
 @FIGHTFIGHTFIGHT.error
 async def FIGHTFIGHTFIGHTERROR(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 24 hours! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 30 minutes! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
         await ctx.send(embed=em)
 @client.command(name="info", description = "info about game.")
 async def InfoCmd(ctx):
