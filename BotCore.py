@@ -116,7 +116,7 @@ async def shopcmd(ctx):
     else:
         pass
 @client.command(name="AlmietPyramid", description="Infinity fight.")
-@commands.cooldown(1, 1800, commands.BucketType.user)
+@commands.cooldown(1, 86400, commands.BucketType.user)
 async def FIGHTFIGHTFIGHT(ctx):
     if SandWorldCore.IsProfileExist(ctx.author.id):
         Wins = 0
@@ -148,7 +148,48 @@ async def FIGHTFIGHTFIGHT(ctx):
 @FIGHTFIGHTFIGHT.error
 async def FIGHTFIGHTFIGHTERROR(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 30 minutes! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 24 hours! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
+        await ctx.send(embed=em)
+@client.command(name="Equip", description="You can equip item.")
+async def EquipITEM(ctx):
+    if SandWorldCore.IsProfileExist(ctx.author.id):
+        DataBase = SandWorldCore.GetDataBase()
+        if DataBase[str(ctx.author.id)]["Inventory"] != []:
+            IndexTable = {}
+            Message = "🎒Inventory:\n"
+            Index = 0
+            for InventoryMember in DataBase[str(ctx.author.id)]["Inventory"]:
+                Index += 1
+                Message = Message + "``" + str(Index) + "``" + " — " + InventoryMember["Name"] + "\n"
+                IndexTable[str(Index)] = InventoryMember
+            TheEmbed = discord.Embed(title="SandWorld Online Alpha", type="rich", description=Message, colour=0x8ceb07)
+            msg = await ctx.send(embed=TheEmbed)
+            def check(message):
+                return message.channel == msg.channel and message.author.id == ctx.author.id
+            try:
+                AuthorMessage = await client.wait_for('message', check=check)
+            except asyncio.TimeoutError:
+                await msg.delete()
+            if AuthorMessage.content in IndexTable:
+                DataBase[str(ctx.author.id)]["Inventory"].append(DataBase[str(ctx.author.id)]["Armor"])
+                if "AttackPlus" in IndexTable[AuthorMessage.content]:
+                    DataBase[str(ctx.author.id)]["Item"] = IndexTable[AuthorMessage.content]
+                else:
+                    DataBase[str(ctx.author.id)]["Armor"] = IndexTable[AuthorMessage.content]
+                DataBase[str(ctx.author.id)]["Inventory"].remove(IndexTable[AuthorMessage.content])
+                SandWorldCore.WriteNewDataBase(DataBase)
+                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Successfully equipped!", colour=0x31ab20)
+                await ctx.send(embed=em)
+                IndexTable.clear()
+            else:
+                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: Invalid item index.", colour=0xffdd00)
+                await ctx.send(embed=em)
+                IndexTable.clear()
+        else:
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You're inventory is empty.", colour=0xffdd00)
+            await ctx.send(embed=em)
+    else:
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
         await ctx.send(embed=em)
 @client.command(name="info", description = "info about game.")
 async def InfoCmd(ctx):
