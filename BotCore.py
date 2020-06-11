@@ -18,103 +18,66 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Command not found.\nType sw!help for get command list.', colour=0xffdd00))
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         await ctx.send(embed=discord.Embed(title="SandWorld Online Alpha", description=':warning: Argument Error.\nType sw!help for get Argument list.', colour=0xffdd00))
-@client.command(name="Shop", description = "buy some item.")
-async def shopcmd(ctx):
-    em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"**🛒SHOP**\n⛏️ Shovel - 30 sand\n🗡️Rusty sword - 100 sand\n🦾Old armor - 120 sand\n🔰Almiet armor - 15.000 sand\n🔪Almiet Sword - 5.000 sand", colour=0x337cc4)
-    em.set_footer(text="for buy click reaction")
-    msg = await ctx.send(embed=em)
-    await msg.add_reaction("⛏️")
-    await msg.add_reaction("🗡️")
-    await msg.add_reaction("🦾")
-    await msg.add_reaction("🔰")
-    await msg.add_reaction("🔪")
-    def check(reaction, user):
-        return user.id == ctx.author.id and reaction.message.id == msg.id
-    try:
-        rea, use = await client.wait_for('reaction_add', check=check, timeout=30.0)
-    except asyncio.TimeoutError:
-        await msg.delete()
-    if rea.emoji == "⛏️":
-        shovel = SandWorldCore.BuyShovel(ctx.author.id)
-        if shovel == 1:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await msg.edit(embed=em)
-        elif shovel == 2:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await msg.edit(embed=em)
-        elif shovel == 3:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have shovel.", colour=0xffdd00)
-            await msg.edit(embed=em)
-        elif shovel == 4:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await msg.edit(embed=em)
-        await msg.clear_reactions()
-    elif rea.emoji == "🗡️":
-        TheSword = SandWorldCore.CreateItem(0, 7, "Rusty sword")
-        Sword = SandWorldCore.BuyItem(ctx.author.id, TheSword, 100)
-        if Sword == 1:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await msg.edit(embed=em)
-        elif Sword == 2:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await msg.edit(embed=em)
-        elif Sword == 3:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have rusty sword.", colour=0xffdd00)
-            await msg.edit(embed=em)
-        elif Sword == 4:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await msg.edit(embed=em)
-        await msg.clear_reactions()
-    elif rea.emoji == "🦾":
-        TheArmor = SandWorldCore.CreateArmor(5, "Old armor")
-        Armor = SandWorldCore.BuyArmor(ctx.author.id, TheArmor, 120)
-        if Armor == 1:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await msg.edit(embed=em)
-        elif Armor == 2:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await msg.edit(embed=em)
-        elif Armor == 3:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have old armor.", colour=0xffdd00)
-            await msg.edit(embed=em)
-        elif Armor == 4:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await msg.edit(embed=em)
-        await msg.clear_reactions()
-    elif rea.emoji == "🔰":
-        Armor = SandWorldCore.CreateArmor(15, "Almiet armor")
-        ArmorBuy = SandWorldCore.BuyArmor(ctx.author.id, Armor, 15000)
-        if ArmorBuy == 1:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await msg.edit(embed=em)
-        elif ArmorBuy == 2:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await msg.edit(embed=em)
-        elif ArmorBuy == 3:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have Almiet armor.", colour=0xffdd00)
-            await msg.edit(embed=em)
-        elif ArmorBuy == 4:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await msg.edit(embed=em)
-        await msg.clear_reactions()
-    elif rea.emoji == "🔪":
-        TheSword = SandWorldCore.CreateItem(0, 30, "Almiet Sword")
-        Buying = SandWorldCore.BuyItem(ctx.author.id, TheSword, 5000)
-        if Buying == 1:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
-            await msg.edit(embed=em)
-        elif Buying == 2:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
-            await msg.edit(embed=em)
-        elif Buying == 3:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have Almiet sword.", colour=0xffdd00)
-            await msg.edit(embed=em)
-        elif Buying == 4:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
-            await msg.edit(embed=em)
-        await msg.clear_reactions()
+@client.command(name="shop", aliases=["Shop", "Market", "market"], description="Just shop.")
+async def SHOPPPPP(ctx):
+    if SandWorldCore.IsProfileExist(ctx.author.id):
+        Text = "**🛒SHOP**\n"
+        for index, ShopItem in enumerate(SandWorldCore.other.find_one({'_id': 'ShopTable'})['ShopArray']):
+            Text += f"{ShopItem['reaction-emoji']}{str(ShopItem['Name'])} - {str(ShopItem['Price'])} sand\n"
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=Text, colour=0x337cc4)
+        em.set_footer(text="for buy click reaction")
+        msg = await ctx.send(embed=em)
+        EmojieExist = []
+        for index, ShopItem in enumerate(SandWorldCore.other.find_one({'_id': 'ShopTable'})['ShopArray']):
+            await msg.add_reaction(ShopItem['reaction-emoji'])
+            EmojieExist.append(ShopItem['reaction-emoji'])
+        def check(reaction, user):
+            return user.id == ctx.author.id and reaction.message.id == msg.id
+        try:
+            rea, use = await client.wait_for('reaction_add', check=check, timeout=30.0)
+        except asyncio.TimeoutError:
+            await msg.delete()
+        if rea.emoji in EmojieExist:
+            for index, ShopItem in enumerate(SandWorldCore.other.find_one({'_id': 'ShopTable'})['ShopArray']):
+                if rea.emoji == ShopItem['reaction-emoji']:
+                    User = SandWorldCore.profiles.find_one({"_id": str(ctx.author.id)})
+                    if ShopItem['type'] == 1:
+                        if User["Balance"] >= ShopItem['Price']:
+                            if User["Item"]["Name"] != ShopItem['Item']['Name'] and not ShopItem['Item'] in User['Inventory']:
+                                NewBalance = User["Balance"] - ShopItem['Price']
+                                if User["Item"]["Name"] != "None":
+                                    SandWorldCore.profiles.update_one({'_id': str(ctx.author.id)},  {'$push': {'Inventory': User["Item"]}})
+                                SandWorldCore.profiles.update_one({"_id": str(ctx.author.id)}, {'$set': {"Balance": NewBalance, "Item": ShopItem['Item']}})
+                                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
+                                await msg.edit(embed=em)
+                            else:
+                                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You already have {ShopItem['Item']['Name']}.", colour=0xffdd00)
+                                await msg.edit(embed=em)
+                        else:
+                            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
+                            await msg.edit(embed=em)
+                    else:
+                        if User["Balance"] >= ShopItem['Price']:
+                            if User["Armor"]["Name"] != ShopItem['Item']['Name'] and not ShopItem['Item'] in User['Inventory']:
+                                NewBalance = User["Balance"] - ShopItem['Price']
+                                if User["Armor"]["Name"] != "None":
+                                    SandWorldCore.profiles.update_one({'_id': str(ctx.author.id)},  {'$push': {'Inventory': User["Armor"]}})
+                                SandWorldCore.profiles.update_one({"_id": str(ctx.author.id)}, {'$set': {"Balance": NewBalance, "Armor": ShopItem['Item']}})
+                                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Thanks for buy!", colour=0x31ab20)
+                                await msg.edit(embed=em)
+                            else:
+                                em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You already have {ShopItem['Item']['Name']}.", colour=0xffdd00)
+                                await msg.edit(embed=em)
+                        else:
+                            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":x: Insufficient balance.", colour=0xd11f1f)
+                            await msg.edit(embed=em)
+                    await msg.clear_reactions()
+                    break
+        else:
+            pass
     else:
-        pass
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
+        await msg.edit(embed=em)
 @client.command(name="AlmietPyramid", description="Infinity fight.")
 @commands.cooldown(1, 86400, commands.BucketType.user)
 async def FIGHTFIGHTFIGHT(ctx):
@@ -132,16 +95,10 @@ async def FIGHTFIGHTFIGHT(ctx):
                 AlmietMinDamage += 1
             else:
                 break
-        if Wins >= 15:
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You win and get Strengthened Almiet Armor!", colour=0x8ceb07)
-            await ctx.send(embed=em)
-            AlmietArmor = SandWorldCore.CreateArmor(30, "Strengthened Almiet Armor")
-            SandWorldCore.BuyArmor(ctx.author.id, AlmietArmor, 0)
-        else:
-            SandGet = random.randint(10 * Wins, 20 * Wins)
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You lost and get {str(SandGet)} sand!", colour=0x8ceb07)
-            await ctx.send(embed=em)
-            SandWorldCore.AddSand(ctx.author.id, SandGet)
+        SandGet = random.randint(10 * Wins, 20 * Wins)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: You lost and get {str(SandGet)} sand!", colour=0x8ceb07)
+        await ctx.send(embed=em)
+        SandWorldCore.AddSand(ctx.author.id, SandGet)
     else:
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
         await ctx.send(embed=em)
@@ -150,15 +107,24 @@ async def FIGHTFIGHTFIGHTERROR(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 24 hours! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
         await ctx.send(embed=em)
-@client.command(name="Equip", description="You can equip item.")
+@client.command(hidden=True, name="AddItem")
+async def ADDITEM(ctx, Price : int, Emoji, Type : int, AttackPlus : int = None, SandFarmPlus : int = None, BlockPlus : int = None, *, Name):
+    if ctx.author.id == 714881781408727189:
+        if Type == 1:
+            SandWorldCore.AddItemToShop(Name, Price, SandWorldCore.CreateItem(SandFarmPlus, AttackPlus, Name), Emoji, Type)
+        else:
+            SandWorldCore.AddItemToShop(Name, Price, SandWorldCore.CreateArmor(BlockPlus, Name), Emoji, Type)
+    else:
+        pass
+@client.command(name="Equip", aliases=["equip"], description="You can equip item.")
 async def EquipITEM(ctx):
     if SandWorldCore.IsProfileExist(ctx.author.id):
-        DataBase = SandWorldCore.GetDataBase()
-        if DataBase[str(ctx.author.id)]["Inventory"] != []:
+        User = SandWorldCore.profiles.find_one({"_id": str(ctx.author.id)})
+        if User["Inventory"] != []:
             IndexTable = {}
             Message = "🎒Inventory:\n"
             Index = 0
-            for InventoryMember in DataBase[str(ctx.author.id)]["Inventory"]:
+            for InventoryMember in User["Inventory"]:
                 Index += 1
                 Message = Message + "``" + str(Index) + "``" + " — " + InventoryMember["Name"] + "\n"
                 IndexTable[str(Index)] = InventoryMember
@@ -171,13 +137,19 @@ async def EquipITEM(ctx):
             except asyncio.TimeoutError:
                 await msg.delete()
             if AuthorMessage.content in IndexTable:
-                DataBase[str(ctx.author.id)]["Inventory"].append(DataBase[str(ctx.author.id)]["Armor"])
                 if "AttackPlus" in IndexTable[AuthorMessage.content]:
-                    DataBase[str(ctx.author.id)]["Item"] = IndexTable[AuthorMessage.content]
+                    if User["Item"]["Name"] == "None":
+                        pass
+                    else:
+                        SandWorldCore.profiles.update_one({'_id': str(ctx.author.id)},  {'$push': {'Inventory': User["Item"]}})
+                    SandWorldCore.profiles.update_one({"_id": str(ctx.author.id)}, {'$set': {"Item": IndexTable[AuthorMessage.content]}})
                 else:
-                    DataBase[str(ctx.author.id)]["Armor"] = IndexTable[AuthorMessage.content]
-                DataBase[str(ctx.author.id)]["Inventory"].remove(IndexTable[AuthorMessage.content])
-                SandWorldCore.WriteNewDataBase(DataBase)
+                    if User["Armor"]["Name"] == "None":
+                        pass
+                    else:
+                        SandWorldCore.profiles.update_one({'_id': str(ctx.author.id)},  {'$push': {'Inventory': User["Armor"]}})
+                    SandWorldCore.profiles.update_one({"_id": str(ctx.author.id)}, {'$set': {"Armor": IndexTable[AuthorMessage.content]}})
+                SandWorldCore.profiles.update_one({'_id': str(ctx.author.id)}, {'$pull': {'Inventory': IndexTable[AuthorMessage.content]}})
                 em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Successfully equipped!", colour=0x31ab20)
                 await ctx.send(embed=em)
                 IndexTable.clear()
@@ -196,7 +168,7 @@ async def InfoCmd(ctx):
     SandWorldCoreVer = SandWorldCore.CoreVersion
     em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":robot: Bot core version - {BotCoreVer}\n:cloud_tornado: SandWorld core version - {SandWorldCoreVer}", colour=0x8ceb07)
     await ctx.send(embed=em)
-@client.command(name="Pay", description = "Pay some user Pay <User ping> <Value>.")
+@client.command(name="Pay", aliases=["pay"], description = "Pay some user Pay <User ping> <Value>.")
 async def PayCmd(ctx, member : discord.Member, Value : int):
     if Value >= 1:
         if SandWorldCore.IsProfileExist(ctx.author.id):
@@ -240,7 +212,7 @@ async def Hidden6(ctx):
         await ctx.send(embed=embed)
     else:
         pass
-@client.command(name="RegProfile", description = "Profile creating.")
+@client.command(name="RegProfile", aliases=["reg", "register", "regprofile", "Reg", "Register"], description = "Profile creating.")
 async def Reg(ctx):
     ProfileId = ctx.author.id
     if SandWorldCore.IsProfileExist(ProfileId):
@@ -250,16 +222,15 @@ async def Reg(ctx):
         SandWorldCore.WritePlayerData(ProfileId)
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":white_check_mark: Account has been created!", colour=0x8ceb07)
         await ctx.send(embed=em)
-@client.command(name="Profile", description = "You're profile info.")
+@client.command(name="Profile", aliases=["profile", "balance", "Balance"], description = "You're profile info.")
 async def Profile(ctx, member : discord.Member = None):
     if member == None:
         ProfileId = ctx.author.id
         if SandWorldCore.IsProfileExist(ProfileId):
             Balance = str(SandWorldCore.GetBalance(ProfileId))
-            Shovel = SandWorldCore.GetShovelExistEmoji(ProfileId)
             ItemName = SandWorldCore.GetPlayerItem(ctx.author.id)["Name"]
             ArmorName = SandWorldCore.GetPlayerArmor(ctx.author.id)["Name"]
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: — {Balance}\n⛏️shovel — {Shovel}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: — {Balance}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
             await ctx.send(embed=em)
         else:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
@@ -269,25 +240,31 @@ async def Profile(ctx, member : discord.Member = None):
         if SandWorldCore.IsProfileExist(ProfileId):
             Name = member.mention
             Balance = str(SandWorldCore.GetBalance(ProfileId))
-            Shovel = SandWorldCore.GetShovelExistEmoji(ProfileId)
             ItemName = SandWorldCore.GetPlayerItem(ProfileId)["Name"]
             ArmorName = SandWorldCore.GetPlayerArmor(ProfileId)["Name"]
-            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{Name}'s profile\n:island: - {Balance}\n⛏️shovel - {Shovel}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{Name}'s profile\n:island: - {Balance}\nItem — {ItemName}\nArmor — {ArmorName}", colour=0x8ceb07)
             await ctx.send(embed=em)
         else:
             em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need do sw!RegProfile before do that!", colour=0xffdd00)
             await ctx.send(embed=em)
 @client.command(hidden = True, name="GiveAdmin")
 async def Hidden1(ctx, member : discord.Member):
-    if ctx.author.id != 414039381398257704:
+    if ctx.author.id != 714881781408727189:
         pass
     else:
         SandWorldCore.AddAdmin(member.id)
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{member.mention} now admin!", colour=0x8ceb07)
         await ctx.send(embed=em)
+@client.command(hidden = True, name="IsAdmin")
+async def Hidden8333(ctx, member : discord.Member):
+    if ctx.author.id != 714881781408727189:
+        pass
+    else:
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f"{SandWorldCore.IsAdmin(ctx.author.id)}", colour=0x8ceb07)
+        await ctx.send(embed=em)
 @client.command(hidden = True, name="RemoveAdmin")
 async def Hidden8(ctx, member : discord.Member):
-    if ctx.author.id != 414039381398257704:
+    if ctx.author.id != 714881781408727189:
         pass
     else:
         if SandWorldCore.IsAdmin(member.id):
@@ -337,7 +314,35 @@ async def Hidden5(ctx, member : discord.Member, value):
             await ctx.send(embed=em)
     else:
         pass
-@client.command(name="DigSand", description = "Get sand.")
+@client.command(name="PrimeReward", aliases=["primereward"], description="Get daily send.")
+@commands.cooldown(1, 86400, commands.BucketType.user)
+async def PrimeReward(ctx):
+    if SandWorldCore.IsPrime(ctx.author.id):
+        Dig = SandWorldCore.random.randint(40, 80)
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=f":island: {ctx.author.mention} you're reward {str(Dig)} sand!", colour=0x8ceb07)
+        await ctx.send(embed=em)
+        SandWorldCore.AddSand(ctx.author.id, Dig)
+    else:
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need buy prime before do that!", colour=0xffdd00)
+        await ctx.send(embed=em)
+@client.command(name="BuyPrime", aliases=["Prime", "prime", "buyprime"], description="Buy prime.")
+async def BuyingShit(ctx):
+    if SandWorldCore.IsProfileExist(ctx.author.id):
+        if SandWorldCore.IsPrime(ctx.author.id):
+            em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You already have prime.", colour=0xffdd00)
+            await ctx.send(embed=em)
+        else:
+            await ctx.send("check you're DM's.")
+            await SandWorldCore.BuyPrime(ctx, client)
+    else:
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: You need sw!RegProfile before do that!", colour=0xffdd00)
+        await ctx.send(embed=em)
+@PrimeReward.error
+async def PrimeRewardError(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 24 hours! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
+        await ctx.send(embed=em)
+@client.command(name="DigSand", aliases=["digsand", "GetSand", "getsand", "FarmSand", "farmsand"], description = "Get sand.")
 @commands.cooldown(1, 20, commands.BucketType.user)
 async def Dig(ctx):
     ProfileId = ctx.author.id
@@ -372,5 +377,4 @@ async def DigError(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title="SandWorld Online Alpha", type="rich", description=":warning: This command can only be used once every 20 seconds! Try again after {} seconds.".format(round(error.retry_after)), colour=0xffdd00)
         await ctx.send(embed=em)
-token = os.environ.get("BOT_TOKEN")
-client.run(token)
+client.run('Token here')
